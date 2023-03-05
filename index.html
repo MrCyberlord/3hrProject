@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Seller's Page</title>
   </head>
   <body>
     <form id="expTrkForm" onsubmit="addExpense(event)">
@@ -13,25 +13,18 @@
       <label>Product Name</label>
       <input type="text" id="desc" />
 
-      <input type="submit" value="Add Expense" />
+      <input type="submit" value="Add Product" />
     </form>
 
-    <button onclick="calculateTotalExpense()" style="margin-left: 1000px">
-      Total Expense
-    </button>
-    <span
-      id="totalExpense"
-      style="
-        display: inline-block;
-        width: 75px;
-        height: 20px;
-        border: 1px solid black;
-        vertical-align: bottom;
-      "
-    ></span>
+    <h1>Products</h1>
 
     <ul id="expenseList"></ul>
+    <br />
+
+    <span style="font-size: 25px">Total value worth of Products is</span>
+    <span>Rs</span>
+    <span id="totalExpense"></span>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
-  <script src="mainA.js"></script>
+  <script src="main.js"></script>
 </html>

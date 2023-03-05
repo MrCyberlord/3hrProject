@@ -1,6 +1,7 @@
 let expList = document.getElementById("expenseList");
+let totalExpense = document.getElementById("totalExpense");
 
-function addExpense(event) {
+async function addExpense(event) {
   event.preventDefault();
 
   let amount = document.getElementById("amount").value;
@@ -11,73 +12,66 @@ function addExpense(event) {
     descp,
   };
 
-  axios
-    .post(
-      "https://crudcrud.com/api/484cf1f1ee7b444dabd451f1a49ac41a/expDataBase",
+  try {
+    const res = await axios.post(
+      "https://crudcrud.com/api/a539a6eabd8b4e93881fd69703b34b23/expDataBase",
       expData
-    )
-    .then((res) => {
-      showUserDetails(res.data);
+    );
+    showUserDetails(res.data);
 
-      let totalExpense = parseFloat(
-        document.getElementById("totalExpense").textContent
-      );
-      document.getElementById("amount").value = "";
-      document.getElementById("desc").value = "";
-      calculateTotalExpense();
-    });
+    document.getElementById("amount").value = "";
+    document.getElementById("desc").value = "";
+    calculateTotalExpense();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  axios
-    .get(
-      "https://crudcrud.com/api/484cf1f1ee7b444dabd451f1a49ac41a/expDataBase"
-    )
-    .then((res) => {
-      for (let i = 0; i < res.data.length; i++) {
-        showUserDetails(res.data[i]);
-      }
-    });
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await axios.get(
+      "https://crudcrud.com/api/a539a6eabd8b4e93881fd69703b34b23/expDataBase"
+    );
+    for (let i = 0; i < res.data.length; i++) {
+      showUserDetails(res.data[i]);
+    }
+    calculateTotalExpense();
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 function showUserDetails(jsonData) {
-  let output = `<li id=${jsonData._id}>${jsonData.descp} ->  ${jsonData.amount}
-  <button onclick=edtExp('${jsonData._id}','${jsonData.amount}','${jsonData.descp}')>Edit</button>
+  let output = `<li id=${jsonData._id}>${jsonData.amount} : ${jsonData.descp} 
   <button onclick=delExp('${jsonData._id}')>Delete Expense</button</li>`;
   expList.innerHTML = expList.innerHTML + output;
-  calculateTotalExpense();
 }
 
-function delExp(id) {
-  axios
-    .delete(
-      "https://crudcrud.com/api/484cf1f1ee7b444dabd451f1a49ac41a/expDataBase/" +
+async function delExp(id) {
+  try {
+    const res = await axios.delete(
+      "https://crudcrud.com/api/a539a6eabd8b4e93881fd69703b34b23/expDataBase/" +
         id
-    )
-    .then((res) => {
-      removeUser(id);
-      calculateTotalExpense();
-    });
+    );
+    removeUser(id);
+    calculateTotalExpense();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 function removeUser(id) {
   expList.removeChild(document.getElementById(id));
 }
 
-function edtExp(id, amt, des, categ) {
-  document.getElementById("amount").value = amt;
-  document.getElementById("desc").value = des;
-  removeUser(id);
-}
-
 function calculateTotalExpense() {
   let expenseItems = document.querySelectorAll("#expenseList li");
-  let totalExpense = 0;
+  let total = 0;
   for (let i = 0; i < expenseItems.length; i++) {
     let expenseAmount = parseFloat(
-      expenseItems[i].textContent.split("->")[1].trim()
+      expenseItems[i].textContent.split(":")[0].trim()
     );
-    totalExpense += expenseAmount;
+    total += expenseAmount;
   }
-  document.getElementById("totalExpense").textContent = totalExpense.toFixed(2);
+  totalExpense.textContent = total.toFixed(2);
 }
